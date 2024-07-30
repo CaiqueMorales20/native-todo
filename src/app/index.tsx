@@ -2,6 +2,7 @@ import FontAwesome5 from '@expo/vector-icons/FontAwesome5'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { useState } from 'react'
 import {
+  Alert,
   FlatList,
   Platform,
   Pressable,
@@ -22,8 +23,26 @@ export default function Index() {
   const [newTaskName, setNewTaskName] = useState<string>('')
   const [tasks, setTasks] = useState<ITask[]>([])
 
-  function onDelete(idToDelete: number) {
-    deleteTask({ idToDelete, setState: setTasks })
+  function onDelete({
+    idToDelete,
+    name,
+  }: {
+    idToDelete: number
+    name: string
+  }) {
+    Alert.alert(
+      'Delete',
+      `Are you sure you want to delete participant ${name}`,
+      [
+        {
+          text: 'Yes',
+          onPress: () => deleteTask({ idToDelete, setState: setTasks }),
+        },
+        {
+          text: 'No',
+        },
+      ],
+    )
   }
 
   function onComplete(idToComplete: number) {
@@ -91,7 +110,9 @@ export default function Index() {
               id={item.id}
               name={item.name}
               completed={item.completed}
-              onDelete={() => onDelete(item.id)}
+              onDelete={() =>
+                onDelete({ idToDelete: item.id, name: item.name })
+              }
               onComplete={() => onComplete(item.id)}
             />
           )}
